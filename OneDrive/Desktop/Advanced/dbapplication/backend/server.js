@@ -1,63 +1,51 @@
 const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
-const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const app = express();
-const port = 3000;
-
+app.use(express.json());
 app.use(cors());
-app.use(bodyParser.json());
 
-// Connect to the database (or create if it doesn't exist)
-const db = new sqlite3.Database("./database.db", (err) => {
-    if (err) {
-        console.error(err.message);
-    } else {
-        console.log("Connected to the SQLite database.");
-        db.run(`
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                email TEXT NOT NULL UNIQUE
-            )
-        `);
-    }
+// Connect to SQLite database
+const db = new sqlite3.Database("database.db", (err) => {
+    if (err) console.error("Error opening database", err);
+    else console.log("Database connected");
 });
 
-// Create (Add Data)
+// Create table
+db.run(`CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL
+)`);
+
+// Add user
 app.post("/add", (req, res) => {
     const { name, email } = req.body;
     db.run(`INSERT INTO users (name, email) VALUES (?, ?)`, [name, email], function (err) {
-        if (err) {
-            return res.status(400).json({ error: err.message });
-        }
+        if (err) return res.status(400).json({ error: err.message });
         res.json({ id: this.lastID });
     });
 });
 
-// Read (View Data)
+// View users
 app.get("/users", (req, res) => {
-    db.all(`SELECT * FROM users`, [], (err, rows) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
+    db.all("SELECT * FROM users", [], (err, rows) => {
+        if (err) return res.status(400).json({ error: err.message });
         res.json(rows);
     });
 });
 
-// Delete Data
+// Delete user
 app.delete("/delete/:id", (req, res) => {
-    const { id } = req.params;
-    db.run(`DELETE FROM users WHERE id = ?`, id, function (err) {
-        if (err) {
-            return res.status(400).json({ error: err.message });
-        }
-        res.json({ message: "User deleted", rowsAffected: this.changes });
+    db.run(`DELETE FROM users WHERE id = ?`, req.params.id, function (err) {
+        if (err) return res.status(400).json({ error: err.message });
+        res.json({ message: "Deleted successfully" });
     });
 });
 
 // Start server
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
 });
