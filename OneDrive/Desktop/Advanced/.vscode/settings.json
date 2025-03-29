@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "undefined/subscriptions/4daeb97b-8dc6-4c23-87da-319a8146deb0/resourceGroups/appsvc_windows_centralus/providers/Microsoft.Web/sites/webappmaria",
+    "appService.deploySubpath": "."
+}
