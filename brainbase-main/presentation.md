@@ -3,7 +3,7 @@
 **Course**: IT00AL12-3004 Advanced Web Development  
 **Team**: Kalu Ugwu Maria  
 **GitHub**: https://github.com/maria3378/brainbase-main/tree/main/brainbase-main  
-**Video Presentation**: [Watch Here](https://youtu.be/YOUR_VIDEO_LINK)  
+**Video Presentation**: https://www.youtube.com/watch?v=mDY6bmDhciU
 **Presentation Date**: June 2025  
 
 ---
